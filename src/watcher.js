@@ -5,6 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
 
+require("dotenv").config();
+
 const WATCH_DIR = process.env?.WATCH_DIR || ".";
 const WATCH_FILE_EXTENSIONS = process.env?.WATCH_FILE_EXTENSIONS || "txt";
 const SCP_TARGET_PATH = process.env?.SCP_TARGET_PATH || "localhost";

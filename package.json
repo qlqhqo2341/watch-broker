@@ -19,7 +19,6 @@
   "homepage": "https://github.com/qlqhqo2341/watch-broker#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "glob": "^7.1.6",
     "pm2": "^4.5.4"
   }
 }
