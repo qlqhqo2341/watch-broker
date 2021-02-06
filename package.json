@@ -1,0 +1,22 @@
+{
+  "name": "watch-broker",
+  "version": "1.0.0",
+  "description": "파일 추가를 감지하여 외부 ssh서버로 전송 시켜주는 서버입니다.",
+  "main": "watcher.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qlqhqo2341/watch-broker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qlqhqo2341/watch-broker/issues"
+  },
+  "homepage": "https://github.com/qlqhqo2341/watch-broker#readme",
+  "dependencies": {
+    "pm2": "^4.5.4"
+  }
+}
