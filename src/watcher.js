@@ -29,7 +29,7 @@ fs.watch(WATCH_DIR, (event, file) => {
 
     lastFileMtime[filePath] = stats.mtime;
 
-    const command = `scp ${filePath} ${SCP_TARGET_PATH}`;
+    const command = `scp '${filePath}' '${SCP_TARGET_PATH}'`;
     console.log(`execute with ${command}`);
     exec(command, (error, stdout, stderr) => {
       if (error) {
