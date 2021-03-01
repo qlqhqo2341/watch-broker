@@ -10,6 +10,7 @@
 
 - WATCH_DIR : 파일 watching할 디렉토리
 - WATCH_FILE_EXTENSIONS : watching대상 확장자
+- TRANSFERRED_FILE_EXTENSIONS : 처리후 해당 파일에 덧붙일 확장자명 (없을경우 해당 동작 실행안함)
 - SCP_TARGET_PATH : scp로 파일 전송할 대상 디렉토리
   - os의 scp명령어를 그대로 사용하므로 직접 cli로 작동여부를 확인해야합니다.
   - `~/.ssh/config` 파일에 연결 설정을 넣어 두는 것을 추천합니다.

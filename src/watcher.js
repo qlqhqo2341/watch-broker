@@ -9,8 +9,18 @@ require("dotenv").config();
 
 const WATCH_DIR = process.env?.WATCH_DIR || ".";
 const WATCH_FILE_EXTENSIONS = process.env?.WATCH_FILE_EXTENSIONS || "txt";
+const TRANSFERRED_FILE_EXTENSIONS = process.env?.TRANSFERRED_FILE_EXTENSIONS || "";
 const SCP_TARGET_PATH = process.env?.SCP_TARGET_PATH || "localhost";
 const lastFileMtime = {};
+
+const watchExtensionsWithDot = "." + WATCH_FILE_EXTENSIONS.replace(".", "");
+const transferredExtensionsWithDot = "." + TRANSFERRED_FILE_EXTENSIONS.replace(".", "");
+
+if (WATCH_FILE_EXTENSIONS === TRANSFERRED_FILE_EXTENSIONS) {
+  console.error(`TRANSFERRED_FILE_EXTENSIONS is MUST BE different with WATCH_FILE_EXTENSIONS`);
+  console.error(`TRANSFERRED_FILE_EXTENSIONS[${TRANSFERRED_FILE_EXTENSIONS}], WATCH_FILE_EXTENSIONS[${WATCH_FILE_EXTENSIONS}]`);
+  return 3;
+}
 
 fs.watch(WATCH_DIR, (event, file) => {
   if (event !== "rename" || !isFileWithExtension(file)) {
@@ -31,28 +41,41 @@ fs.watch(WATCH_DIR, (event, file) => {
 
     const command = `scp '${filePath}' '${SCP_TARGET_PATH}'`;
     console.log(`execute with ${command}`);
-    exec(command, (error, stdout, stderr) => {
+    const uploadProcess = exec(command, (error, stdout, stderr) => {
       if (error) {
-        console.log(`${filePath} upload error: ${error.message}`);
+        console.error(`${filePath} upload error: ${error.message}`);
         return;
       }
       if (stderr) {
-        console.log(`${filePath} upload stderr: ${stderr}`);
+        console.error(`${filePath} upload stderr: ${stderr}`);
         return;
       }
       console.log(`${filePath} upload stdout: ${stdout}`);
     });
+    uploadProcess.on('exit', (code, signal) => {
+      if (code !== 0) {
+        console.error(`scp upload is exit with code[${code}], signal[${signal}]`);
+        return;
+      }
+      if (transferredExtensionsWithDot === ".") {
+        return;
+      }
+      const newFilePath = filePath + transferredExtensionsWithDot;
+      fs.renameSync(filePath, newFilePath);
+      console.log(`file rename from '${filePath}' to '${newFilePath}'`)
+    });
+
   });
 });
 
-const extensionsWithDot = "." + WATCH_FILE_EXTENSIONS.replace(".", "");
+
 const isFileWithExtension = (full) => {
-  if (full.length < extensionsWithDot.length) return false;
-  if (extensionsWithDot === ".") return true;
+  if (full.length < watchExtensionsWithDot.length) return false;
+  if (watchExtensionsWithDot === ".") return true;
   const cut = full.substr(
-    full.length - extensionsWithDot.length,
-    extensionsWithDot.length
+    full.length - watchExtensionsWithDot.length,
+    watchExtensionsWithDot.length
   );
 
-  return cut === extensionsWithDot;
+  return cut === watchExtensionsWithDot;
 };
